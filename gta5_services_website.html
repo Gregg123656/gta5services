@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTA5 Pro Services - Mission Assistance</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 25%, #0f4c75 50%, #3282b8 75%, #bbe1fa 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100"><text x="10" y="30" font-family="Arial Black" font-size="20" fill="rgba(255,255,255,0.12)" transform="rotate(-15)">GTA V</text></svg>'),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100"><text x="10" y="30" font-family="Arial Black" font-size="18" fill="rgba(255,255,255,0.08)" transform="rotate(10)">GRAND THEFT AUTO</text></svg>'),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 80"><text x="5" y="25" font-family="Arial Black" font-size="24" fill="rgba(255,255,255,0.15)">V</text></svg>'),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 90"><text x="8" y="28" font-family="Arial Black" font-size="16" fill="rgba(255,255,255,0.1)" transform="rotate(25)">GTA</text></svg>'),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 110"><text x="12" y="35" font-family="Arial Black" font-size="22" fill="rgba(255,255,255,0.06)" transform="rotate(-25)">ONLINE</text></svg>');
+            background-size: 250px 150px, 350px 200px, 180px 120px, 200px 130px, 300px 180px;
+            background-repeat: repeat;
+            background-position: 0 0, 150px 80px, 80px 40px, 220px 160px, 50px 120px;
+            z-index: -1;
+            pointer-events: none;
+            animation: float 25s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-10px) rotate(1deg); }
+            66% { transform: translateY(5px) rotate(-1deg); }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid #f0b90b;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            color: white;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .packages {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .package {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .package:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .package.popular {
+            border: 3px solid #667eea;
+            transform: scale(1.05);
+        }
+        
+        .package.popular::before {
+            content: "Most Popular";
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .package h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #f0b90b;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        
+        .features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        
+        .features li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .info-section {
+            background: white;
+            margin: 3rem 0;
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .info-section h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #333;
+            font-size: 2rem;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .info-card {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+        
+        .info-card h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+        
+        footer {
+            background: rgba(0,0,0,0.8);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .packages {
+                grid-template-columns: 1fr;
+            }
+            
+            .package.popular {
+                transform: none;
+            }
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+        
+        .close {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .close:hover {
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">GTA5 Money & Levels</div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Professional GTA5 Money & Levels Boost</h1>
+            <p>Get expert help earning money and XP through missions, heists, and strategic gameplay - PC Only (Legacy & Enhanced)</p>
+        </div>
+    </section>
+
+    <section class="container">
+        <div class="packages">
+            <div class="package">
+                <h3>Starter Package</h3>
+                <div class="price">$15</div>
+                <ul class="features">
+                    <li>Basic money-making guidance</li>
+                    <li>Beginner mission strategies</li>
+                    <li>2-3 high-paying missions</li>
+                    <li>Quick cash tips</li>
+                    <li>1 week support</li>
+                </ul>
+                <button class="btn" onclick="openModal('Starter Package', 15)">Get Started</button>
+            </div>
+
+            <div class="package popular">
+                <h3>Pro Package</h3>
+                <div class="price">$25</div>
+                <ul class="features">
+                    <li>Advanced money strategies</li>
+                    <li>High-profit heist guidance</li>
+                    <li>5-7 lucrative missions</li>
+                    <li>Efficient grinding methods</li>
+                    <li>Business income optimization</li>
+                    <li>2 weeks support</li>
+                </ul>
+                <button class="btn" onclick="openModal('Pro Package', 25)">Most Popular</button>
+            </div>
+
+            <div class="package">
+                <h3>Elite Package</h3>
+                <div class="price">$70</div>
+                <ul class="features">
+                    <li>Maximum money-making strategies</li>
+                    <li>All high-profit heists covered</li>
+                    <li>Unlimited lucrative missions</li>
+                    <li>Advanced income optimization</li>
+                    <li>Multi-business profit planning</li>
+                    <li>Passive income setup guidance</li>
+                    <li>Priority money-making support</li>
+                    <li>1 month comprehensive coaching</li>
+                </ul>
+                <button class="btn" onclick="openModal('Elite Package', 70)">Go Elite</button>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>How It Works</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>1. Choose Package</h3>
+                    <p>Select the package that best fits your needs and gaming goals.</p>
+                </div>
+                <div class="info-card">
+                    <h3>2. Provide Details</h3>
+                    <p>Share your GTA5 username and preferred gaming times.</p>
+                </div>
+                <div class="info-card">
+                    <h3>3. Get Assistance</h3>
+                    <p>Connect with our expert player for guided mission completion.</p>
+                </div>
+                <div class="info-card">
+                    <h3>4. Earn More</h3>
+                    <p>Maximize your income and build wealth faster with expert money-making guidance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 GTA5 Money Services. Professional gaming guidance for profitable PC gameplay.</p>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Order <span id="packageName"></span></h2>
+            <p>Price: $<span id="packagePrice"></span></p>
+            
+            <form id="orderForm">
+                <div class="form-group">
+                    <label for="playerName">Your Name:</label>
+                    <input type="text" id="playerName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="gtaUsername">GTA5 Username:</label>
+                    <input type="text" id="gtaUsername" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="platform">Platform:</label>
+                    <select id="platform" required>
+                        <option value="">Select Platform</option>
+                        <option value="legacy">PC Legacy</option>
+                        <option value="enhanced">PC Enhanced</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="preferredTime">Preferred Gaming Time:</label>
+                    <input type="text" id="preferredTime" placeholder="e.g., Evenings EST" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notes">Additional Notes:</label>
+                    <input type="text" id="notes" placeholder="Specific missions or goals">
+                </div>
+                
+                <button type="submit" class="btn">Place Order - $<span id="finalPrice"></span></button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openModal(packageName, price) {
+            document.getElementById('packageName').textContent = packageName;
+            document.getElementById('packagePrice').textContent = price;
+            document.getElementById('finalPrice').textContent = price;
+            document.getElementById('orderModal').style.display = 'block';
+        }
+        
+        function closeModal() {
+            document.getElementById('orderModal').style.display = 'none';
+        }
+        
+        window.onclick = function(event) {
+            const modal = document.getElementById('orderModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        document.getElementById('orderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                package: document.getElementById('packageName').textContent,
+                price: document.getElementById('packagePrice').textContent,
+                name: document.getElementById('playerName').value,
+                email: document.getElementById('email').value,
+                gtaUsername: document.getElementById('gtaUsername').value,
+                platform: document.getElementById('platform').value,
+                preferredTime: document.getElementById('preferredTime').value,
+                notes: document.getElementById('notes').value
+            };
+            
+            // Here you would typically send the data to your payment processor
+            alert('Thank you for your order! You will receive payment instructions via email shortly.');
+            closeModal();
+            
+            // Reset form
+            document.getElementById('orderForm').reset();
+        });
+    </script>
+</body>
+</html>
